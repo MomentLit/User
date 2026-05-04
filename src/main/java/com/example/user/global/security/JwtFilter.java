@@ -8,11 +8,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
 
+@Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -28,19 +30,23 @@ public class JwtFilter extends OncePerRequestFilter {
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
 
-            if (jwtProvider.validateToken(token)) {
-                String userId = jwtProvider.getUserId(token);
+            try {
+                if (jwtProvider.validateToken(token)) {
+                    String userId = jwtProvider.getUserId(token);
 
-                UserPrincipal principal = new UserPrincipal(userId);
+                    UserPrincipal principal = new UserPrincipal(userId);
 
-                Authentication authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                principal,
-                                null,
-                                Collections.emptyList()
-                        );
+                    Authentication authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    principal,
+                                    null,
+                                    Collections.emptyList()
+                            );
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (Exception e) {
+                SecurityContextHolder.clearContext();
             }
         }
 
