@@ -43,12 +43,4 @@ public class JwtProvider {
             return false;
         }
     }
-    public String createTestToken(String userId) {
-        return Jwts.builder()
-                .subject(userId)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
-                .signWith(secretKey)
-                .compact();
-    }
 }
