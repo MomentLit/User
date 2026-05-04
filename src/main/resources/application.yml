@@ -1,3 +1,15 @@
 spring:
   application:
     name: User
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/momentlit_user
+    username: jhlarry1109
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  secret: momentlit-user-service-jwt-secret-key-for-local-test-1234567890
