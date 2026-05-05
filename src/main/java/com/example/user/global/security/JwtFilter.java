@@ -1,5 +1,6 @@
 package com.example.user.global.security;
 
+import com.example.user.entity.Role;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,12 +8,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -33,14 +36,15 @@ public class JwtFilter extends OncePerRequestFilter {
             try {
                 if (jwtProvider.validateToken(token)) {
                     String userId = jwtProvider.getUserId(token);
+                    Role role = jwtProvider.getRole(token);
 
-                    UserPrincipal principal = new UserPrincipal(userId);
+                    UserPrincipal principal = new UserPrincipal(userId, role);
 
                     Authentication authentication =
                             new UsernamePasswordAuthenticationToken(
                                     principal,
                                     null,
-                                    Collections.emptyList()
+                                    List.of(new SimpleGrantedAuthority("ROLE_" + role.name()))
                             );
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -6,7 +6,7 @@ import com.example.user.dto.response.SignUpResponse;
 import com.example.user.dto.response.UserSearchResponse;
 import com.example.user.global.dto.ApiResponse;
 import com.example.user.global.security.UserPrincipal;
-import com.example.user.global.util.HttpUtil;
+import com.example.user.global.util.ResponseUtil;
 import com.example.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class UserController {
     ) {
         SignUpResponse response = userService.signup(request);
 
-        ApiResponse<SignUpResponse> apiResponse = HttpUtil.success("create user", response);
+        ApiResponse<SignUpResponse> apiResponse = ResponseUtil.success("create user", response);
 
         return ResponseEntity.status(201).body(apiResponse);
     }
@@ -38,7 +38,7 @@ public class UserController {
     ) {
         UserSearchResponse response = userService.getMyProfile(principal.getUserId());
 
-        ApiResponse<UserSearchResponse> apiResponse = HttpUtil.success("select my profile", response);
+        ApiResponse<UserSearchResponse> apiResponse = ResponseUtil.success("select my profile", response);
 
         return ResponseEntity.ok(apiResponse);
     }

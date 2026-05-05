@@ -1,6 +1,7 @@
 package com.example.user.global.security;
 
 
+import com.example.user.entity.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -30,6 +31,19 @@ public class JwtProvider {
 
         return claims.getSubject();
     }
+
+    public Role getRole(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        String role = claims.get("role", String.class);
+
+        return Role.valueOf(role);
+    }
+
 
     public boolean validateToken(String token) {
         try {
