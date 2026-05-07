@@ -7,6 +7,7 @@ import com.example.user.dto.response.UserSearchResponse;
 import com.example.user.entity.User;
 import com.example.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // 회원가입 (유저 생성)
     @Transactional
@@ -22,9 +24,12 @@ public class UserService {
         if (userRepository.existsByEmail(request.email())) {
             throw new IllegalArgumentException("이미 존재하는 이메일");
         }
+
+        String encodedPassword = passwordEncoder.encode(request.password());
+
         User user = User.create(
                 request.email(),
-                request.password(),
+                encodedPassword,
                 request.name()
         );
         userRepository.save(user);
