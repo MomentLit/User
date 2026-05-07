@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 
 @Component
 public class JwtProvider {
@@ -39,7 +38,8 @@ public class JwtProvider {
                 .parseSignedClaims(token)
                 .getPayload();
 
-        String role = claims.get("role", String.class);
+        String role = claims.get("role", String.class)
+                .replace("ROLE_", "");
 
         return Role.valueOf(role);
     }

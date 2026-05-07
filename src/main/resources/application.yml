@@ -1,18 +1,20 @@
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
 
 spring:
   application:
     name: User
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/momentlit_user
-    username: jhlarry1109
+    url: "jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:momentlit_user}"
+    username: "${DB_USERNAME:user_user}"
+    password: "${DB_PASSWORD:user_password}"
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: "${JPA_DDL_AUTO:update}"
     show-sql: true
 
 jwt:
-  secret: momentlit-user-service-jwt-secret-key-for-local-test-1234567890
+  secret: "${JWT_SECRET:momentlit-user-service-jwt-secret-key-for-local-test-1234567890}"
