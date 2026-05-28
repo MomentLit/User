@@ -1,6 +1,7 @@
 package com.example.user.service;
 
 import com.example.user.dto.request.SignInRequest;
+import com.example.user.dto.request.UserGoogleOauthRequest;
 import com.example.user.dto.response.UserAuthResponse;
 import com.example.user.entity.User;
 import com.example.user.repository.UserRepository;
@@ -27,6 +28,17 @@ public class InternalUserService {
             return UserAuthResponse.from(user);
         }
 
+        @Transactional
+        public UserAuthResponse authenticateGoogle(UserGoogleOauthRequest request) {
+            if (!Boolean.TRUE.equals(request.emailVerified())) {
+                throw new IllegalArgumentException("Google 이메일 인증이 필요합니다.");
+            }
+
+            User user = findOrCreateGoogleUser(request);
+
+            return UserAuthResponse.from(user);
+        }
+
         // 삭제 여부 확인
         private void validateActiveUser(User user) {
             if (user.getDeletedAt() != null) {
@@ -39,5 +51,27 @@ public class InternalUserService {
             if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
                 throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
             }
+        }
+
+        private User findOrCreateGoogleUser(UserGoogleOauthRequest request) {
+            return userRepository
+                    .findByAuthProviderAndProviderIdAndDeletedAtIsNull("GOOGLE", request.providerId())
+                    .orElseGet(() -> createGoogleUser(request));
+        }
+
+        private User createGoogleUser(UserGoogleOauthRequest request) {
+            userRepository.findByEmailAndDeletedAtIsNull(request.email())
+                    .ifPresent(existingUser -> {
+                        throw new IllegalArgumentException("이미 가입된 이메일입니다.");
+                    });
+
+            User user = User.createGoogle(
+                    request.email(),
+                    request.name(),
+                    request.imageUrl(),
+                    request.providerId()
+            );
+
+            return userRepository.save(user);
         }
 }

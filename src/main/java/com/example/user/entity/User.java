@@ -60,6 +60,23 @@ public class User {
                 .build();
     }
 
+    public static User createGoogle(
+            String email,
+            String name,
+            String imageUrl,
+            String providerId
+    ) {
+        return User.builder()
+                .id(UUID.randomUUID().toString())
+                .email(email)
+                .name(name)
+                .imageUrl(imageUrl)
+                .role(Role.USER)
+                .authProvider("GOOGLE")
+                .providerId(providerId)
+                .build();
+    }
+
     public void update(String name, String imageUrl) {
         if (this.deletedAt != null) {
             throw new IllegalStateException("삭제된 유저");

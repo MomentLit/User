@@ -1,6 +1,7 @@
 package com.example.user.controller;
 
 import com.example.user.dto.request.SignInRequest;
+import com.example.user.dto.request.UserGoogleOauthRequest;
 import com.example.user.dto.response.UserAuthResponse;
 import com.example.user.service.InternalUserService;
 import lombok.RequiredArgsConstructor;
@@ -26,4 +27,10 @@ public class InternalUserController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/oauth/google")
+    public ResponseEntity<UserAuthResponse> authenticateGoogle(
+            @RequestBody UserGoogleOauthRequest request
+            ) {
+        return ResponseEntity.ok(internalUserService.authenticateGoogle(request));
+    }
 }
