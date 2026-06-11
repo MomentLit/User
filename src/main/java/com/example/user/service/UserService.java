@@ -38,6 +38,7 @@ public class UserService {
     }
 
     // 내 정보 조회
+    @Transactional(readOnly = true)
     public UserSearchResponse getMyProfile(String userId) {
         User user = getActiveUser(userId);
         return UserSearchResponse.from(user);
