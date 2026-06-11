@@ -1,0 +1,213 @@
+openapi: 3.0.3
+info:
+  title: "User API"
+  description: "API specification for User. Error response mapping is Needs confirmation because no global exception handler is visible."
+  version: "0.1.0"
+servers:
+  - url: "Needs confirmation"
+    description: "Needs confirmation"
+tags:
+  - name: "Users"
+  - name: "Internal Users"
+paths:
+  /users/signup:
+    post:
+      tags: ["Users"]
+      summary: "Create a user"
+      description: "Creates a local user account. Authentication is not required by SecurityConfig."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignUpRequest"
+      responses:
+        "201":
+          description: "User created."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignUpApiResponse"
+        default:
+          description: "Needs confirmation"
+  /users/me:
+    get:
+      tags: ["Users"]
+      summary: "Get my profile"
+      description: "Returns the authenticated user's profile. Authentication is required by SecurityConfig."
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "Profile returned."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSearchApiResponse"
+        default:
+          description: "Needs confirmation"
+    patch:
+      tags: ["Users"]
+      summary: "Update my profile"
+      description: "Updates name and/or image_url for the authenticated user. Authentication is required by SecurityConfig."
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdateRequest"
+      responses:
+        "204":
+          description: "Profile updated."
+        default:
+          description: "Needs confirmation"
+    delete:
+      tags: ["Users"]
+      summary: "Delete my profile"
+      description: "Soft-deletes the authenticated user. Authentication is required by SecurityConfig."
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: "User deleted."
+        default:
+          description: "Needs confirmation"
+  /internal/users/authenticate:
+    post:
+      tags: ["Internal Users"]
+      summary: "Authenticate a local user"
+      description: "Authenticates by email and password. SecurityConfig permits this route; intended network boundary is Needs confirmation."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignInRequest"
+      responses:
+        "200":
+          description: "Authentication result returned."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAuthResponse"
+        default:
+          description: "Needs confirmation"
+  /internal/users/oauth/google:
+    post:
+      tags: ["Internal Users"]
+      summary: "Authenticate or create a Google user"
+      description: "Finds or creates a Google provider user when email_verified is true. Google token verification is Needs confirmation."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserGoogleOauthRequest"
+      responses:
+        "200":
+          description: "Authentication result returned."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAuthResponse"
+        default:
+          description: "Needs confirmation"
+components:
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        data:
+          nullable: true
+    SignUpRequest:
+      type: object
+      required: [email, password, name]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        name:
+          type: string
+    UserUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        image_url:
+          type: string
+          nullable: true
+    SignInRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    UserGoogleOauthRequest:
+      type: object
+      properties:
+        provider_id:
+          type: string
+        email:
+          type: string
+        email_verified:
+          type: boolean
+        name:
+          type: string
+        image_url:
+          type: string
+          nullable: true
+    SignUpResponse:
+      type: object
+      properties:
+        user_id:
+          type: string
+    UserSearchResponse:
+      type: object
+      properties:
+        image_url:
+          type: string
+          nullable: true
+        email:
+          type: string
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    UserAuthResponse:
+      type: object
+      properties:
+        user_id:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum: [USER, ADMIN]
+    SignUpApiResponse:
+      allOf:
+        - $ref: "#/components/schemas/ApiResponse"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/SignUpResponse"
+    UserSearchApiResponse:
+      allOf:
+        - $ref: "#/components/schemas/ApiResponse"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/UserSearchResponse"
+  responses: {}
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
