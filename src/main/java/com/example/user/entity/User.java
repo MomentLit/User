@@ -33,6 +33,9 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Column(nullable = false)
+    private String phone;
+
     @Column(name = "auth_provider")
     private String authProvider;
 
@@ -50,12 +53,13 @@ public class User {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    public static User create(String email, String password, String name) {
+    public static User create(String email, String password, String name, String phone) {
         return User.builder()
                 .id(UUID.randomUUID().toString())
                 .email(email)
                 .password(password)
                 .name(name)
+                .phone(phone)
                 .role(Role.USER)
                 .build();
     }

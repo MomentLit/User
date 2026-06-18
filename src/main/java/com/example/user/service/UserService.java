@@ -30,7 +30,8 @@ public class UserService {
         User user = User.create(
                 request.email(),
                 encodedPassword,
-                request.name()
+                request.name(),
+                request.phone()
         );
         userRepository.save(user);
 
