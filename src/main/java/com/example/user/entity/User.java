@@ -1,5 +1,6 @@
 package com.example.user.entity;
 
+import com.example.user.global.exception.DeletedUserException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -79,7 +80,7 @@ public class User {
 
     public void update(String name, String imageUrl) {
         if (this.deletedAt != null) {
-            throw new IllegalStateException("삭제된 유저");
+            throw new DeletedUserException("삭제된 유저");
         }
         if (name != null) this.name = name;
         if (imageUrl != null) this.imageUrl = imageUrl;
@@ -87,7 +88,7 @@ public class User {
 
     public void delete() {
         if (this.deletedAt != null) {
-            throw new IllegalStateException("삭제된 유저");
+            throw new DeletedUserException("삭제된 유저");
         }
         this.deletedAt = LocalDateTime.now();
     }
