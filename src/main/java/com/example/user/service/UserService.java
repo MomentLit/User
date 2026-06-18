@@ -52,7 +52,7 @@ public class UserService {
         if (request.name() != null && request.name().isBlank()) {
             throw new IllegalArgumentException("이름은 비어있을 수 없음");
         }
-        user.update(request.name(), request.imageUrl());
+        user.update(request.name(), request.imageUrl(), request.phone());
     }
 
     // 삭제

@@ -81,12 +81,13 @@ public class User {
                 .build();
     }
 
-    public void update(String name, String imageUrl) {
+    public void update(String name, String imageUrl, String phone) {
         if (this.deletedAt != null) {
             throw new IllegalStateException("삭제된 유저");
         }
         if (name != null) this.name = name;
         if (imageUrl != null) this.imageUrl = imageUrl;
+        if (phone != null) this.phone = phone;
     }
 
     public void delete() {
