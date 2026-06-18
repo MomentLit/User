@@ -105,7 +105,8 @@ class UserControllerTest {
                         .content("""
                                 {
                                   "name": "Updated User",
-                                  "image_url": "https://example.com/updated.png"
+                                  "image_url": "https://example.com/updated.png",
+                                  "phone": "010-1234-5678"
                                 }
                                 """))
                 .andExpect(status().isNoContent());

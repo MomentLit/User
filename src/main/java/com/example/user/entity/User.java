@@ -33,6 +33,9 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Column(unique = true)
+    private String phone;
+
     @Column(name = "auth_provider")
     private String authProvider;
 
@@ -50,12 +53,13 @@ public class User {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    public static User create(String email, String password, String name) {
+    public static User create(String email, String password, String name, String phone) {
         return User.builder()
                 .id(UUID.randomUUID().toString())
                 .email(email)
                 .password(password)
                 .name(name)
+                .phone(phone)
                 .role(Role.USER)
                 .build();
     }
@@ -77,12 +81,13 @@ public class User {
                 .build();
     }
 
-    public void update(String name, String imageUrl) {
+    public void update(String name, String imageUrl, String phone) {
         if (this.deletedAt != null) {
             throw new IllegalStateException("삭제된 유저");
         }
         if (name != null) this.name = name;
         if (imageUrl != null) this.imageUrl = imageUrl;
+        if (phone != null) this.phone = phone;
     }
 
     public void delete() {
