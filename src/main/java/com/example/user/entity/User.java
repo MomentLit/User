@@ -33,7 +33,7 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @Column(nullable = false)
+    @Column(unique = true)
     private String phone;
 
     @Column(name = "auth_provider")
