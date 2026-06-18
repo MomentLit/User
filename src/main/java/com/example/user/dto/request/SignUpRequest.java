@@ -12,6 +12,9 @@ public record SignUpRequest(
         String password,
 
         @NotBlank
-        String name
+        String name,
+
+        @NotBlank
+        String phone
 ) {
 }

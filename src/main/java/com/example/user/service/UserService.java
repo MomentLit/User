@@ -34,7 +34,8 @@ public class UserService {
         User user = User.create(
                 request.email(),
                 encodedPassword,
-                request.name()
+                request.name(),
+                request.phone()
         );
         userRepository.save(user);
 
@@ -55,7 +56,7 @@ public class UserService {
         if (request.name() != null && request.name().isBlank()) {
             throw new BadRequestException("이름은 비어있을 수 없음");
         }
-        user.update(request.name(), request.imageUrl());
+        user.update(request.name(), request.imageUrl(), request.phone());
     }
 
     // 삭제
