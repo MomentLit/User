@@ -13,6 +13,10 @@ public record UserSearchResponse(
 
         String name,
 
+        String phone,
+
+        String intro,
+
         @JsonProperty("created_at")
         LocalDateTime createdAt
 ) {
@@ -21,6 +25,8 @@ public record UserSearchResponse(
                 user.getImageUrl(),
                 user.getEmail(),
                 user.getName(),
+                user.getPhone(),
+                user.getIntro(),
                 user.getCreatedAt()
         );
     }

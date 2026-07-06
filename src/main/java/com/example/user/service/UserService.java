@@ -56,7 +56,7 @@ public class UserService {
         if (request.name() != null && request.name().isBlank()) {
             throw new BadRequestException("이름은 비어있을 수 없음");
         }
-        user.update(request.name(), request.imageUrl(), request.phone());
+        user.update(request.name(), request.imageUrl(), request.phone(), request.intro());
     }
 
     // 삭제

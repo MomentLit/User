@@ -8,6 +8,8 @@ public record UserUpdateRequest(
         @JsonProperty("image_url")
         String imageUrl,
 
-        String phone
+        String phone,
+
+        String intro
 ) {
 }

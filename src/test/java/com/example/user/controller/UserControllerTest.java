@@ -63,7 +63,8 @@ class UserControllerTest {
                                 {
                                   "email": "test@example.com",
                                   "password": "password123",
-                                  "name": "Test User"
+                                  "name": "Test User",
+                                  "phone": "010-1234-5678"
                                 }
                                 """))
                 .andExpect(status().isCreated())
@@ -75,6 +76,7 @@ class UserControllerTest {
         assertThat(captor.getValue().email()).isEqualTo("test@example.com");
         assertThat(captor.getValue().password()).isEqualTo("password123");
         assertThat(captor.getValue().name()).isEqualTo("Test User");
+        assertThat(captor.getValue().phone()).isEqualTo("010-1234-5678");
     }
 
     @Test
@@ -84,6 +86,8 @@ class UserControllerTest {
                         "https://example.com/profile.png",
                         "test@example.com",
                         "Test User",
+                        "010-1234-5678",
+                        "Hello, MomentLit",
                         LocalDateTime.of(2026, 5, 28, 12, 0)
                 ));
 
@@ -93,6 +97,8 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.data.image_url").value("https://example.com/profile.png"))
                 .andExpect(jsonPath("$.data.email").value("test@example.com"))
                 .andExpect(jsonPath("$.data.name").value("Test User"))
+                .andExpect(jsonPath("$.data.phone").value("010-1234-5678"))
+                .andExpect(jsonPath("$.data.intro").value("Hello, MomentLit"))
                 .andExpect(jsonPath("$.data.created_at").exists());
 
         verify(userService).getMyProfile(USER_ID);
@@ -106,7 +112,8 @@ class UserControllerTest {
                                 {
                                   "name": "Updated User",
                                   "image_url": "https://example.com/updated.png",
-                                  "phone": "010-1234-5678"
+                                  "phone": "010-1234-5678",
+                                  "intro": "Updated intro"
                                 }
                                 """))
                 .andExpect(status().isNoContent());
@@ -115,6 +122,8 @@ class UserControllerTest {
         verify(userService).update(org.mockito.Mockito.eq(USER_ID), captor.capture());
         assertThat(captor.getValue().name()).isEqualTo("Updated User");
         assertThat(captor.getValue().imageUrl()).isEqualTo("https://example.com/updated.png");
+        assertThat(captor.getValue().phone()).isEqualTo("010-1234-5678");
+        assertThat(captor.getValue().intro()).isEqualTo("Updated intro");
     }
 
     @Test

@@ -37,6 +37,8 @@ public class User {
     @Column(unique = true)
     private String phone;
 
+    private String intro;
+
     @Column(name = "auth_provider")
     private String authProvider;
 
@@ -82,13 +84,14 @@ public class User {
                 .build();
     }
 
-    public void update(String name, String imageUrl, String phone) {
+    public void update(String name, String imageUrl, String phone, String intro) {
         if (this.deletedAt != null) {
             throw new DeletedUserException("삭제된 유저");
         }
         if (name != null) this.name = name;
         if (imageUrl != null) this.imageUrl = imageUrl;
         if (phone != null) this.phone = phone;
+        if (intro != null) this.intro = intro;
     }
 
     public void delete() {
