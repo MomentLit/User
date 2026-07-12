@@ -88,6 +88,7 @@ class UserControllerTest {
                         "Test User",
                         "010-1234-5678",
                         "Hello, MomentLit",
+                        Role.USER,
                         LocalDateTime.of(2026, 5, 28, 12, 0)
                 ));
 
@@ -99,6 +100,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.data.name").value("Test User"))
                 .andExpect(jsonPath("$.data.phone").value("010-1234-5678"))
                 .andExpect(jsonPath("$.data.intro").value("Hello, MomentLit"))
+                .andExpect(jsonPath("$.data.role").value("USER"))
                 .andExpect(jsonPath("$.data.created_at").exists());
 
         verify(userService).getMyProfile(USER_ID);

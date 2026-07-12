@@ -190,6 +190,9 @@ components:
         intro:
           type: string
           nullable: true
+        role:
+          type: string
+          enum: [USER, ADMIN]
         created_at:
           type: string
           format: date-time

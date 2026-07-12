@@ -1,5 +1,6 @@
 package com.example.user.dto.response;
 
+import com.example.user.entity.Role;
 import com.example.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -17,6 +18,8 @@ public record UserSearchResponse(
 
         String intro,
 
+        Role role,
+
         @JsonProperty("created_at")
         LocalDateTime createdAt
 ) {
@@ -27,6 +30,7 @@ public record UserSearchResponse(
                 user.getName(),
                 user.getPhone(),
                 user.getIntro(),
+                user.getRole(),
                 user.getCreatedAt()
         );
     }
