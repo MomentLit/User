@@ -84,6 +84,7 @@ public class User {
                 .build();
     }
 
+
     public void update(String name, String imageUrl, String phone, String intro) {
         if (this.deletedAt != null) {
             throw new DeletedUserException("삭제된 유저");
