@@ -3,6 +3,7 @@ package com.example.user.service;
 import com.example.user.dto.request.SignInRequest;
 import com.example.user.dto.request.UserGoogleOauthRequest;
 import com.example.user.dto.response.UserAuthResponse;
+import com.example.user.dto.response.UserNameResponse;
 import com.example.user.entity.User;
 import com.example.user.global.exception.BadRequestException;
 import com.example.user.global.exception.DeletedUserException;
@@ -42,6 +43,16 @@ public class InternalUserService {
         User user = findOrCreateGoogleUser(request);
 
         return UserAuthResponse.from(user);
+    }
+
+    @Transactional(readOnly = true)
+    public UserNameResponse getUserName(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("유저 없음"));
+
+        validateActiveUser(user);
+
+        return UserNameResponse.from(user);
     }
 
     // 삭제 여부 확인
