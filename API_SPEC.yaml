@@ -94,17 +94,17 @@ paths:
                 $ref: "#/components/schemas/UserAuthResponse"
         default:
           description: "Needs confirmation"
-  /internal/users/oauth/google:
+  /internal/users/oauth:
     post:
       tags: ["Internal Users"]
-      summary: "Authenticate or create a Google user"
-      description: "Finds or creates a Google provider user when email_verified is true. Google token verification is Needs confirmation."
+      summary: "Authenticate or create an OAuth user"
+      description: "Finds or creates a social provider user. Used by Auth after provider-specific userinfo is normalized."
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserGoogleOauthRequest"
+              $ref: "#/components/schemas/UserOauthRequest"
       responses:
         "200":
           description: "Authentication result returned."
@@ -155,17 +155,23 @@ components:
           type: string
         password:
           type: string
-    UserGoogleOauthRequest:
+    UserOauthRequest:
       type: object
+      required: [provider, provider_id, email]
       properties:
+        provider:
+          type: string
+          enum: [GOOGLE, NAVER, KAKAO]
         provider_id:
           type: string
         email:
           type: string
         email_verified:
           type: boolean
+          nullable: true
         name:
           type: string
+          nullable: true
         image_url:
           type: string
           nullable: true

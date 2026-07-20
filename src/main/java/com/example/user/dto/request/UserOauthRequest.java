@@ -2,7 +2,9 @@ package com.example.user.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record UserGoogleOauthRequest(
+public record UserOauthRequest(
+        String provider,
+
         @JsonProperty("provider_id")
         String providerId,
 

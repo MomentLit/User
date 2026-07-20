@@ -67,10 +67,11 @@ public class User {
                 .build();
     }
 
-    public static User createGoogle(
+    public static User createOauth(
             String email,
             String name,
             String imageUrl,
+            String authProvider,
             String providerId
     ) {
         return User.builder()
@@ -79,7 +80,7 @@ public class User {
                 .name(name)
                 .imageUrl(imageUrl)
                 .role(Role.USER)
-                .authProvider("GOOGLE")
+                .authProvider(authProvider)
                 .providerId(providerId)
                 .build();
     }

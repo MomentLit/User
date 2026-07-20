@@ -1,7 +1,7 @@
 package com.example.user.controller;
 
 import com.example.user.dto.request.SignInRequest;
-import com.example.user.dto.request.UserGoogleOauthRequest;
+import com.example.user.dto.request.UserOauthRequest;
 import com.example.user.dto.response.UserAuthResponse;
 import com.example.user.dto.response.UserNameResponse;
 import com.example.user.service.InternalUserService;
@@ -30,11 +30,11 @@ public class InternalUserController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/oauth/google")
-    public ResponseEntity<UserAuthResponse> authenticateGoogle(
-            @RequestBody UserGoogleOauthRequest request
-            ) {
-        return ResponseEntity.ok(internalUserService.authenticateGoogle(request));
+    @PostMapping("/oauth")
+    public ResponseEntity<UserAuthResponse> authenticateOauth(
+            @RequestBody UserOauthRequest request
+    ) {
+        return ResponseEntity.ok(internalUserService.authenticateOauth(request));
     }
 
     @GetMapping("/{user-id}/name")

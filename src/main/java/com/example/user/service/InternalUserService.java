@@ -1,7 +1,7 @@
 package com.example.user.service;
 
 import com.example.user.dto.request.SignInRequest;
-import com.example.user.dto.request.UserGoogleOauthRequest;
+import com.example.user.dto.request.UserOauthRequest;
 import com.example.user.dto.response.UserAuthResponse;
 import com.example.user.dto.response.UserNameResponse;
 import com.example.user.entity.User;
@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -35,12 +36,10 @@ public class InternalUserService {
     }
 
     @Transactional
-    public UserAuthResponse authenticateGoogle(UserGoogleOauthRequest request) {
-        if (!Boolean.TRUE.equals(request.emailVerified())) {
-            throw new BadRequestException("Google 이메일 인증이 필요합니다.");
-        }
+    public UserAuthResponse authenticateOauth(UserOauthRequest request) {
+        validateOauthRequest(request);
 
-        User user = findOrCreateGoogleUser(request);
+        User user = findOrCreateOauthUser(request);
 
         return UserAuthResponse.from(user);
     }
@@ -69,22 +68,39 @@ public class InternalUserService {
         }
     }
 
-    private User findOrCreateGoogleUser(UserGoogleOauthRequest request) {
-        return userRepository
-                .findByAuthProviderAndProviderIdAndDeletedAtIsNull("GOOGLE", request.providerId())
-                .orElseGet(() -> createGoogleUser(request));
+    private void validateOauthRequest(UserOauthRequest request) {
+        if (request == null
+                || !StringUtils.hasText(request.provider())
+                || !StringUtils.hasText(request.providerId())) {
+            throw new BadRequestException("OAuth 사용자 정보를 확인할 수 없습니다.");
+        }
+
+        if (!StringUtils.hasText(request.email())) {
+            throw new BadRequestException("이메일 제공 동의가 필요합니다.");
+        }
+
+        if (request.emailVerified() != null && !Boolean.TRUE.equals(request.emailVerified())) {
+            throw new BadRequestException(request.provider() + " 이메일 인증이 필요합니다.");
+        }
     }
 
-    private User createGoogleUser(UserGoogleOauthRequest request) {
+    private User findOrCreateOauthUser(UserOauthRequest request) {
+        return userRepository
+                .findByAuthProviderAndProviderIdAndDeletedAtIsNull(request.provider(), request.providerId())
+                .orElseGet(() -> createOauthUser(request));
+    }
+
+    private User createOauthUser(UserOauthRequest request) {
         userRepository.findByEmailAndDeletedAtIsNull(request.email())
                 .ifPresent(existingUser -> {
                     throw new DuplicateEmailException("이미 가입된 이메일입니다.");
                 });
 
-        User user = User.createGoogle(
+        User user = User.createOauth(
                 request.email(),
                 request.name(),
                 request.imageUrl(),
+                request.provider(),
                 request.providerId()
         );
 
