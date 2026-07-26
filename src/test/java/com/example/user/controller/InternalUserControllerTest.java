@@ -1,7 +1,7 @@
 package com.example.user.controller;
 
 import com.example.user.dto.request.SignInRequest;
-import com.example.user.dto.request.UserGoogleOauthRequest;
+import com.example.user.dto.request.UserOauthRequest;
 import com.example.user.dto.response.UserAuthResponse;
 import com.example.user.service.InternalUserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,14 +60,15 @@ class InternalUserControllerTest {
     }
 
     @Test
-    void authenticateGoogle() throws Exception {
-        when(internalUserService.authenticateGoogle(any(UserGoogleOauthRequest.class)))
+    void authenticateOauth() throws Exception {
+        when(internalUserService.authenticateOauth(any(UserOauthRequest.class)))
                 .thenReturn(new UserAuthResponse("google-user-1", "Google User", "USER"));
 
-        mockMvc.perform(post("/internal/users/oauth/google")
+        mockMvc.perform(post("/internal/users/oauth")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
+                                  "provider": "GOOGLE",
                                   "provider_id": "google-provider-id",
                                   "email": "google@example.com",
                                   "email_verified": true,
@@ -80,8 +81,9 @@ class InternalUserControllerTest {
                 .andExpect(jsonPath("$.name").value("Google User"))
                 .andExpect(jsonPath("$.role").value("USER"));
 
-        ArgumentCaptor<UserGoogleOauthRequest> captor = ArgumentCaptor.forClass(UserGoogleOauthRequest.class);
-        verify(internalUserService).authenticateGoogle(captor.capture());
+        ArgumentCaptor<UserOauthRequest> captor = ArgumentCaptor.forClass(UserOauthRequest.class);
+        verify(internalUserService).authenticateOauth(captor.capture());
+        assertThat(captor.getValue().provider()).isEqualTo("GOOGLE");
         assertThat(captor.getValue().providerId()).isEqualTo("google-provider-id");
         assertThat(captor.getValue().email()).isEqualTo("google@example.com");
         assertThat(captor.getValue().emailVerified()).isTrue();
